@@ -35,12 +35,14 @@
 
 /* The software timer period. */
 #define SW_TIMER_PERIOD_MS (100 / portTICK_PERIOD_MS)
+#define ADC_TIMER_PERIOD_MS (100 / portTICK_PERIOD_MS)
 
 /*******************************************************************************
  * Prototypes
  ******************************************************************************/
 /* The callback function. */
 static void SwTimerCallback(TimerHandle_t xTimer);
+static void ADCTimerCallback(TimerHandle_t xTimer);
 
 
 void generateLUT(void);
@@ -54,7 +56,8 @@ uint8_t DACcounter = 0;
 /*
  * @brief   Application entry point.
  */
-int main(void) {
+int main(void)
+{
 
 	/* Init board hardware. */
 	BOARD_InitBootPins();
@@ -68,17 +71,21 @@ int main(void) {
 	Init_RGB_LEDs();
 	ledOff();
 
+	EnableIRQ(ADC0_IRQn);
+
 	log_message(DEBUG, __func__, "Generating LUT for sine wave");
 	log_message(RELEASE, __func__, "Generating LUT for sine wave");
 	generateLUT();
 	log_message(DEBUG, __func__, "Initializing the DAC");
 	DAC_Initialize();
+	ADC_Initialize();
 
-//	for(int i = 0; i < 50; i++){
-//		PRINTF("%d\n", sinDAC[i]);
-//	}
+	//	for(int i = 0; i < 50; i++){
+	//		PRINTF("%d\n", sinDAC[i]);
+	//	}
 
 	TimerHandle_t SwTimerHandle = NULL;
+	TimerHandle_t ADCTimerHandle = NULL;
 
 	log_message(DEBUG, __func__, "Creating and running a software timer to run every 100mS");
 	SwTimerHandle = xTimerCreate("SwTimer",          /* Text name. */
@@ -86,8 +93,15 @@ int main(void) {
 			pdTRUE,             /* Enable auto reload. */
 			0,                  /* ID is not used. */
 			SwTimerCallback);   /* The callback function. */
+
+	ADCTimerHandle = xTimerCreate("ADCTimer",          /* Text name. */
+			ADC_TIMER_PERIOD_MS, /* Timer period. */
+			pdTRUE,             /* Enable auto reload. */
+			0,                  /* ID is not used. */
+			ADCTimerCallback);   /* The callback function. */
 	/* Start timer. */
 	xTimerStart(SwTimerHandle, 0);
+	xTimerStart(ADCTimerHandle, 0);
 
 	/* Start scheduling. */
 	log_message(DEBUG, __func__, "Updating signals from DAC every 100mS");
@@ -95,7 +109,18 @@ int main(void) {
 	vTaskStartScheduler();
 
 	while(1) {
-		__asm volatile ("nop");
+//		g_Adc16ConversionDoneFlag = false;
+//		ADC16_SetChannelConfig(DEMO_ADC16_BASEADDR, DEMO_ADC16_CHANNEL_GROUP, &g_adc16ChannelConfigStruct);
+//
+//		while (!g_Adc16ConversionDoneFlag)
+//		{
+//		}
+//		PRINTF("\r\n\r\nADC Value: %d\r\n", g_Adc16ConversionValue);
+//
+//		/* Convert ADC value to a voltage based on 3.3V VREFH on board */
+//		voltRead = (float)(g_Adc16ConversionValue * (VREF_BRD / SE_12BIT));
+//		PRINTF("\r\nADC Voltage: %0.3f\r\n", voltRead);
+
 	}
 	return 0 ;
 }
@@ -110,6 +135,23 @@ void generateLUT(void)
 		//Holds the scaled sin values for the DAC (in range of 1V - 3V)
 		sinDAC[i] = (uint16_t)(((double)(sinLUT[i] + (double)1)/(double)2 * ((double)2479)) + (double)1239);
 	}
+}
+
+static void ADCTimerCallback(TimerHandle_t xTimer)
+{
+	float voltRead;
+
+	g_Adc16ConversionDoneFlag = false;
+	ADC16_SetChannelConfig(DEMO_ADC16_BASEADDR, DEMO_ADC16_CHANNEL_GROUP, &g_adc16ChannelConfigStruct);
+
+	while (!g_Adc16ConversionDoneFlag)
+	{
+	}
+//	PRINTF("\r\n\r\nADC Value: %d\r\n", g_Adc16ConversionValue);
+
+	/* Convert ADC value to a voltage based on 3.3V VREFH on board */
+	voltRead = (float)(g_Adc16ConversionValue * (VREF_BRD / SE_12BIT));
+	PRINTF("%0.3f\r\n", voltRead);
 }
 
 static void SwTimerCallback(TimerHandle_t xTimer)

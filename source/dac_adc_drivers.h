@@ -18,6 +18,13 @@
 
 #define DEMO_DAC_BASEADDR DAC0
 
+#define DEMO_ADC16_BASEADDR ADC0
+#define DEMO_ADC16_CHANNEL_GROUP 0U
+#define DEMO_ADC16_USER_CHANNEL 0U /* PTE20, ADC0_SE0 */
+
+#define VREF_BRD 3.300
+#define SE_12BIT 4096.0
+
 
 
 #define VREF_BRD 3.300
@@ -28,6 +35,8 @@
  ******************************************************************************/
 /* Initialize ADC16 & DAC */
 void DAC_Initialize(void);
+
+void ADC_Initialize(void);
 
 /*******************************************************************************
  * Variables
