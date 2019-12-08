@@ -11,6 +11,8 @@
 #include "fsl_debug_console.h"
 #include <math.h>
 #include "dac_adc_drivers.h"
+#include "loggerFunctions.h"
+#include "ledControl.h"
 
 
 /* Standard includes. */
@@ -21,6 +23,8 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "timers.h"
+#include "queue.h"
+
 
 /* Freescale includes. */
 #include "fsl_device_registers.h"
@@ -31,6 +35,7 @@
 
 /* The software timer period. */
 #define SW_TIMER_PERIOD_MS (100 / portTICK_PERIOD_MS)
+
 /*******************************************************************************
  * Prototypes
  ******************************************************************************/
@@ -57,18 +62,25 @@ int main(void) {
 	BOARD_InitBootPeripherals();
 	/* Init FSL debug console. */
 	BOARD_InitDebugConsole();
+
 	SystemCoreClockUpdate();
 
+	Init_RGB_LEDs();
+	ledOff();
+
+	log_message(DEBUG, __func__, "Generating LUT for sine wave");
+	log_message(RELEASE, __func__, "Generating LUT for sine wave");
 	generateLUT();
+	log_message(DEBUG, __func__, "Initializing the DAC");
 	DAC_Initialize();
 
-
-	for(int i = 0; i < 50; i++){
-		PRINTF("%d\n", sinDAC[i]);
-	}
+//	for(int i = 0; i < 50; i++){
+//		PRINTF("%d\n", sinDAC[i]);
+//	}
 
 	TimerHandle_t SwTimerHandle = NULL;
 
+	log_message(DEBUG, __func__, "Creating and running a software timer to run every 100mS");
 	SwTimerHandle = xTimerCreate("SwTimer",          /* Text name. */
 			SW_TIMER_PERIOD_MS, /* Timer period. */
 			pdTRUE,             /* Enable auto reload. */
@@ -76,7 +88,10 @@ int main(void) {
 			SwTimerCallback);   /* The callback function. */
 	/* Start timer. */
 	xTimerStart(SwTimerHandle, 0);
+
 	/* Start scheduling. */
+	log_message(DEBUG, __func__, "Updating signals from DAC every 100mS");
+	log_message(RELEASE, __func__, "Updating signals from DAC every 100mS");
 	vTaskStartScheduler();
 
 	while(1) {
@@ -99,9 +114,22 @@ void generateLUT(void)
 
 static void SwTimerCallback(TimerHandle_t xTimer)
 {
-//	PRINTF("Tick.\r\n");
+	//Turning the LED to blue
+	ledOff();
+	blueLED();
+
+	//For logger time keeping
+	tenth++;
+
+	//Output the LUT value to the DAC
 	DAC_SetBufferValue(DEMO_DAC_BASEADDR, 0U, sinDAC[DACcounter++]);
 
+	//Reset the DAC LUT index back to zero if limit reached
 	if(DACcounter > 49)
 		DACcounter = 0;
+
+	//Turning the blue LED off
+	ledOff();
 }
+
+

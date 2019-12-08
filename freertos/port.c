@@ -76,6 +76,7 @@
 #include "task.h"
 #include "fsl_tickless_generic.h"
 
+
 extern uint32_t SystemCoreClock; /* in Kinetis SDK, this contains the system core clock speed */
 
 /* Constants required to set up the initial stack. */

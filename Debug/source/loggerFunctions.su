@@ -1,0 +1,10 @@
+core_cm0plus.h:804:22:NVIC_SetPriority	24	static
+loggerFunctions.c:21:6:log_enable	8	static
+loggerFunctions.c:27:6:log_disable	8	static
+loggerFunctions.c:33:6:log_status	8	static
+loggerFunctions.c:40:6:log_data	24	static
+loggerFunctions.c:55:6:log_message	56	static
+loggerFunctions.c:98:6:log_message_int	24	static
+loggerFunctions.c:127:6:log_string	16	static
+loggerFunctions.c:134:6:log_integer	16	static
+loggerFunctions.c:140:6:Init_SysTick	8	static
