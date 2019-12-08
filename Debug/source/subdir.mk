@@ -5,16 +5,19 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../source/PES\ Project\ 6.c \
+../source/dac_driver.c \
 ../source/mtb.c \
 ../source/semihost_hardfault.c 
 
 OBJS += \
 ./source/PES\ Project\ 6.o \
+./source/dac_driver.o \
 ./source/mtb.o \
 ./source/semihost_hardfault.o 
 
 C_DEPS += \
 ./source/PES\ Project\ 6.d \
+./source/dac_driver.d \
 ./source/mtb.d \
 ./source/semihost_hardfault.d 
 

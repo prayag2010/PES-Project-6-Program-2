@@ -6,7 +6,12 @@ source/PES\ Project\ 6.d: ../source/PES\ Project\ 6.c ../board/board.h \
  ../CMSIS/MKL25Z4_features.h ../drivers/fsl_clock.h \
  ../drivers/fsl_common.h ../drivers/fsl_gpio.h ../board/peripherals.h \
  ../board/pin_mux.h ../board/clock_config.h ../CMSIS/MKL25Z4.h \
- ../utilities/fsl_debug_console.h
+ ../utilities/fsl_debug_console.h ../source/dac_adc_drivers.h \
+ ../drivers/fsl_adc16.h ../drivers/fsl_dac.h ../freertos/FreeRTOS.h \
+ ../freertos/FreeRTOSConfig.h ../freertos/projdefs.h \
+ ../freertos/portable.h ../freertos/deprecated_definitions.h \
+ ../freertos/portmacro.h ../freertos/mpu_wrappers.h ../freertos/task.h \
+ ../freertos/list.h ../freertos/timers.h ../freertos/task.h
 
 ../board/board.h:
 
@@ -45,3 +50,31 @@ source/PES\ Project\ 6.d: ../source/PES\ Project\ 6.c ../board/board.h \
 ../CMSIS/MKL25Z4.h:
 
 ../utilities/fsl_debug_console.h:
+
+../source/dac_adc_drivers.h:
+
+../drivers/fsl_adc16.h:
+
+../drivers/fsl_dac.h:
+
+../freertos/FreeRTOS.h:
+
+../freertos/FreeRTOSConfig.h:
+
+../freertos/projdefs.h:
+
+../freertos/portable.h:
+
+../freertos/deprecated_definitions.h:
+
+../freertos/portmacro.h:
+
+../freertos/mpu_wrappers.h:
+
+../freertos/task.h:
+
+../freertos/list.h:
+
+../freertos/timers.h:
+
+../freertos/task.h:
