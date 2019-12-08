@@ -27,15 +27,15 @@ int main(void) {
 	/* Init FSL debug console. */
 	BOARD_InitDebugConsole();
 
-	PRINTF("Hello World\n");
+    PRINTF("Hello World\n");
 
-	for(int i = 0; i < 50; i++){
-		sinLUT[i] = sin((double)M_PI * (i / (double)49));
-	}
+    for(int i = 0; i < 50; i++){
+        sinLUT[i] = sin((double)M_PI * (i / (double)24.5));
+    }
 
-	for(int i = 0; i < 50; i++){
-		PRINTF("%0.2lf\n", sinLUT[i]);
-	}
+    for(int i = 0; i < 50; i++){
+        PRINTF("%0.2lf\n", sinLUT[i]);
+    }
 
 	while(1) {
 		__asm volatile ("nop");
