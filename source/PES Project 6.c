@@ -15,6 +15,7 @@
 #include "dac_adc_drivers.h"
 #include "loggerFunctions.h"
 #include "ledControl.h"
+#include "dma_driver.h"
 
 
 /* Standard includes. */
@@ -27,13 +28,11 @@
 #include "queue.h"
 #include "timers.h"
 
-
-
 /* Freescale includes. */
 #include "fsl_device_registers.h"
 
-//The value of PI (not there in math.h)
-#define M_PI 3.14159265358979323846
+#include "PES_PROJECT_6.h"
+
 
 /*******************************************************************************
  * Definitions
@@ -54,6 +53,7 @@ static void ADCTimerCallback(TimerHandle_t xTimer);
 void generateLUT(void);
 void ADCqueueInit(void);
 
+
 /* Logger queue handle */
 static QueueHandle_t adcQueue = NULL;
 
@@ -65,6 +65,8 @@ uint16_t sinDAC[50] = {0};
 //The LUT index that specifies the current element
 //being sent to the DAC
 uint8_t DACcounter = 0;
+//buffer transferred to by DMA
+uint32_t destDMA[64] = {0};
 
 
 /*
@@ -93,6 +95,7 @@ int main(void)
 	log_message(DEBUG, __func__, "Initializing the DAC");
 	DAC_Initialize();
 	ADC_Initialize();
+	DMA_Initialize();
 	//	ADCqueueInit();
 
 	//	for(int i = 0; i < 50; i++){
@@ -122,7 +125,7 @@ int main(void)
 	log_message(DEBUG, __func__, "Updating signals from DAC every 100mS");
 	log_message(RELEASE, __func__, "Updating signals from DAC every 100mS");
 
-	adcQueue = xQueueCreate(10, sizeof(uint32_t));
+	adcQueue = xQueueCreate(64, sizeof(uint32_t));
 	if(adcQueue == NULL){
 		printf("Queue creation failed\n");
 	} else {
@@ -156,15 +159,34 @@ static void ADCTimerCallback(TimerHandle_t xTimer)
 	{
 	}
 
-	/* Convert ADC value to a voltage based on 3.3V VREFH on board */
-//	float voltage = (float)(g_Adc16ConversionValue * (VREF_BRD / SE_12BIT));
+	//get the ADC value
 	uint32_t ui = g_Adc16ConversionValue;
+	//	xQueueSend(adcQueue, &ui, 0);
+	//	uint32_t temp;
+	//	xQueueReceive(adcQueue, &temp, 0);
+	//	uint32_t* tt = adcQueue;
+	//	printf("Pointer: %d\n", tt);
+	//	printf("Received: %d\n", temp);
+
 
 	if(xQueueSend(adcQueue, &ui, 0) == errQUEUE_FULL){
 		printf("Queue Full, dumping all elements\n\n");
+
+		uint32_t* tt;
+		for(int i = 0; i < 64; i++){
+			tt = adcQueue;
+			printf("Custom %d: %d\n", i, tt[i + 20]);
+		}
+
+
+		DMA_PrepareTransfer(&transferConfig, &tt[20], sizeof(tt[20]), destDMA, sizeof(destDMA[0]), 64 * sizeof(uint32_t),
+				kDMA_MemoryToMemory);
+		DMA_SubmitTransfer(&g_DMA_Handle, &transferConfig, kDMA_EnableInterrupt);
+		DMA_StartTransfer(&g_DMA_Handle);
+
 		uint32_t temp;
 		while(xQueueReceive(adcQueue, &temp, 0) != errQUEUE_EMPTY){
-			printf("%d\n",temp);
+			printf("Q: %d\n",temp);
 		}
 	}
 
@@ -173,7 +195,6 @@ static void ADCTimerCallback(TimerHandle_t xTimer)
 
 static void SwTimerCallback(TimerHandle_t xTimer)
 {
-	printf("DAC\n");
 	//Turning the LED to blue
 	ledOff();
 	greenLED();
@@ -192,14 +213,14 @@ static void SwTimerCallback(TimerHandle_t xTimer)
 	ledOff();
 }
 
-void ADCqueueInit(void)
-{
-	//	adcQueue = xQueueCreate(32, sizeof(float));
-	//	if(adcQueue == NULL){
-	//		printf("Queue creation failed\n");
-	//	} else {
-	//		printf("Queue creation passed\n");
-	//	}
-}
+//void ADCqueueInit(void)
+//{
+//	adcQueue = xQueueCreate(32, sizeof(float));
+//	if(adcQueue == NULL){
+//		printf("Queue creation failed\n");
+//	} else {
+//		printf("Queue creation passed\n");
+//	}
+//}
 
 
