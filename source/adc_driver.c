@@ -39,7 +39,7 @@ void ADC_Initialize(void)
 	#if defined(FSL_FEATURE_ADC16_HAS_CALIBRATION) && FSL_FEATURE_ADC16_HAS_CALIBRATION
 	    if (kStatus_Success == ADC16_DoAutoCalibration(DEMO_ADC16_BASEADDR))
 	    {
-	        PRINTF("\r\nADC16_DoAutoCalibration() Done.");
+	        PRINTF("\r\nADC16_DoAutoCalibration() Done.\n");
 	    }
 	    else
 	    {

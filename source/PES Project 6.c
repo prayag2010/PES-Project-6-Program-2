@@ -2,6 +2,8 @@
  * @file    PES Project 6.c
  * @brief   Application entry point.
  */
+#include <stdint.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include "board.h"
 #include "peripherals.h"
@@ -22,12 +24,16 @@
 /* Kernel includes. */
 #include "FreeRTOS.h"
 #include "task.h"
-#include "timers.h"
 #include "queue.h"
+#include "timers.h"
+
 
 
 /* Freescale includes. */
 #include "fsl_device_registers.h"
+
+//The value of PI (not there in math.h)
+#define M_PI 3.14159265358979323846
 
 /*******************************************************************************
  * Definitions
@@ -46,10 +52,18 @@ static void ADCTimerCallback(TimerHandle_t xTimer);
 
 
 void generateLUT(void);
+void ADCqueueInit(void);
 
+/* Logger queue handle */
+static QueueHandle_t adcQueue = NULL;
+
+#define MAXADCQITEMS 64
+#define ADCQELEMENTSIZE (sizeof(float))
+
+//LUT holding sine DAC outputs
 uint16_t sinDAC[50] = {0};
-#define M_PI 3.14159265358979323846
-
+//The LUT index that specifies the current element
+//being sent to the DAC
 uint8_t DACcounter = 0;
 
 
@@ -79,6 +93,7 @@ int main(void)
 	log_message(DEBUG, __func__, "Initializing the DAC");
 	DAC_Initialize();
 	ADC_Initialize();
+	//	ADCqueueInit();
 
 	//	for(int i = 0; i < 50; i++){
 	//		PRINTF("%d\n", sinDAC[i]);
@@ -106,22 +121,16 @@ int main(void)
 	/* Start scheduling. */
 	log_message(DEBUG, __func__, "Updating signals from DAC every 100mS");
 	log_message(RELEASE, __func__, "Updating signals from DAC every 100mS");
+
+	adcQueue = xQueueCreate(10, sizeof(uint32_t));
+	if(adcQueue == NULL){
+		printf("Queue creation failed\n");
+	} else {
+		printf("Queue creation passed\n");
+	}
+
 	vTaskStartScheduler();
 
-	while(1) {
-//		g_Adc16ConversionDoneFlag = false;
-//		ADC16_SetChannelConfig(DEMO_ADC16_BASEADDR, DEMO_ADC16_CHANNEL_GROUP, &g_adc16ChannelConfigStruct);
-//
-//		while (!g_Adc16ConversionDoneFlag)
-//		{
-//		}
-//		PRINTF("\r\n\r\nADC Value: %d\r\n", g_Adc16ConversionValue);
-//
-//		/* Convert ADC value to a voltage based on 3.3V VREFH on board */
-//		voltRead = (float)(g_Adc16ConversionValue * (VREF_BRD / SE_12BIT));
-//		PRINTF("\r\nADC Voltage: %0.3f\r\n", voltRead);
-
-	}
 	return 0 ;
 }
 
@@ -139,7 +148,6 @@ void generateLUT(void)
 
 static void ADCTimerCallback(TimerHandle_t xTimer)
 {
-	float voltRead;
 
 	g_Adc16ConversionDoneFlag = false;
 	ADC16_SetChannelConfig(DEMO_ADC16_BASEADDR, DEMO_ADC16_CHANNEL_GROUP, &g_adc16ChannelConfigStruct);
@@ -147,18 +155,28 @@ static void ADCTimerCallback(TimerHandle_t xTimer)
 	while (!g_Adc16ConversionDoneFlag)
 	{
 	}
-//	PRINTF("\r\n\r\nADC Value: %d\r\n", g_Adc16ConversionValue);
 
 	/* Convert ADC value to a voltage based on 3.3V VREFH on board */
-	voltRead = (float)(g_Adc16ConversionValue * (VREF_BRD / SE_12BIT));
-	PRINTF("%0.3f\r\n", voltRead);
+//	float voltage = (float)(g_Adc16ConversionValue * (VREF_BRD / SE_12BIT));
+	uint32_t ui = g_Adc16ConversionValue;
+
+	if(xQueueSend(adcQueue, &ui, 0) == errQUEUE_FULL){
+		printf("Queue Full, dumping all elements\n\n");
+		uint32_t temp;
+		while(xQueueReceive(adcQueue, &temp, 0) != errQUEUE_EMPTY){
+			printf("%d\n",temp);
+		}
+	}
+
+	PRINTF("%d\r\n", ui);
 }
 
 static void SwTimerCallback(TimerHandle_t xTimer)
 {
+	printf("DAC\n");
 	//Turning the LED to blue
 	ledOff();
-	blueLED();
+	greenLED();
 
 	//For logger time keeping
 	tenth++;
@@ -172,6 +190,16 @@ static void SwTimerCallback(TimerHandle_t xTimer)
 
 	//Turning the blue LED off
 	ledOff();
+}
+
+void ADCqueueInit(void)
+{
+	//	adcQueue = xQueueCreate(32, sizeof(float));
+	//	if(adcQueue == NULL){
+	//		printf("Queue creation failed\n");
+	//	} else {
+	//		printf("Queue creation passed\n");
+	//	}
 }
 
 
