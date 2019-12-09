@@ -55,7 +55,7 @@ void ADCqueueInit(void);
 
 
 /* Logger queue handle */
-static QueueHandle_t adcQueue = NULL;
+QueueHandle_t adcQueue = NULL;
 
 #define MAXADCQITEMS 64
 #define ADCQELEMENTSIZE (sizeof(float))
@@ -113,10 +113,10 @@ int main(void)
 			SwTimerCallback);   /* The callback function. */
 
 	ADCTimerHandle = xTimerCreate("ADCTimer",          /* Text name. */
-			ADC_TIMER_PERIOD_MS, /* Timer period. */
-			pdTRUE,             /* Enable auto reload. */
-			0,                  /* ID is not used. */
-			ADCTimerCallback);   /* The callback function. */
+			ADC_TIMER_PERIOD_MS,	 /* Timer period. */
+			pdTRUE,            		 /* Enable auto reload. */
+			0,               	     /* ID is not used. */
+			ADCTimerCallback);   	 /* The callback function. */
 	/* Start timer. */
 	xTimerStart(SwTimerHandle, 0);
 	xTimerStart(ADCTimerHandle, 0);
@@ -173,10 +173,11 @@ static void ADCTimerCallback(TimerHandle_t xTimer)
 		printf("Queue Full, dumping all elements\n\n");
 
 		uint32_t* tt;
-		for(int i = 0; i < 64; i++){
-			tt = adcQueue;
-			printf("Custom %d: %d\n", i, tt[i + 20]);
-		}
+		tt = adcQueue;
+//		for(int i = 0; i < 64; i++){
+//			tt = adcQueue;
+//			printf("Custom %d: %d\n", i, tt[i + 20]);
+//		}
 
 
 		DMA_PrepareTransfer(&transferConfig, &tt[20], sizeof(tt[20]), destDMA, sizeof(destDMA[0]), 64 * sizeof(uint32_t),
@@ -185,12 +186,10 @@ static void ADCTimerCallback(TimerHandle_t xTimer)
 		DMA_StartTransfer(&g_DMA_Handle);
 
 		uint32_t temp;
-		while(xQueueReceive(adcQueue, &temp, 0) != errQUEUE_EMPTY){
-			printf("Q: %d\n",temp);
-		}
+		while(xQueueReceive(adcQueue, &temp, 0) != errQUEUE_EMPTY);
 	}
 
-	PRINTF("%d\r\n", ui);
+//	PRINTF("%d\r\n", ui);
 }
 
 static void SwTimerCallback(TimerHandle_t xTimer)

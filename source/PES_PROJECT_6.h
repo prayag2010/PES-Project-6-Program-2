@@ -8,6 +8,12 @@
 #ifndef PES_PROJECT_6_H_
 #define PES_PROJECT_6_H_
 
+/* Kernel includes. */
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+#include "timers.h"
+
 
 //The value of PI (not there in math.h)
 #define M_PI 3.14159265358979323846
@@ -19,6 +25,8 @@ extern uint16_t sinDAC[50];
 extern uint8_t DACcounter;
 //buffer transferred to by DMA
 extern uint32_t destDMA[64];
+//Queue that holds the ADC values
+extern QueueHandle_t adcQueue;
 
 
 #endif /* PES_PROJECT_6_H_ */
