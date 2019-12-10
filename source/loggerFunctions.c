@@ -86,7 +86,7 @@ void log_message(enum loggerMode logLevel, const char *functionName, char *messa
 		//log if normal build config is selected
 		if (logLevel == RELEASE)
 		{
-			printf("RELEASE: ");
+			printf("RELEASE: %lu:%lu:%lu:%lu: ", hour, min, sec, tenth%10);
 			printf("%s: %s\n", functionName, message);
 		}
 #endif
@@ -130,7 +130,7 @@ void log_message_int(enum loggerMode logLevel, const char *functionName, char* m
 #ifdef release
 		//log if normal build config is selected
 		if (logLevel == RELEASE){
-			printf("NORMAL: %lu:%lu:%lu:%lu: ", hour, min, sec, tenth%10);
+			printf("RELEASE: %lu:%lu:%lu:%lu: ", hour, min, sec, tenth%10);
 			printf("%s: %s %d\n", functionName, message, number);
 		}
 #endif

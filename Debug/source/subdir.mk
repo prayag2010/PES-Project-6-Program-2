@@ -5,7 +5,9 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../source/PES\ Project\ 6.c \
+../source/adc_driver.c \
 ../source/dac_driver.c \
+../source/dma_driver.c \
 ../source/ledControl.c \
 ../source/loggerFunctions.c \
 ../source/mtb.c \
@@ -13,7 +15,9 @@ C_SRCS += \
 
 OBJS += \
 ./source/PES\ Project\ 6.o \
+./source/adc_driver.o \
 ./source/dac_driver.o \
+./source/dma_driver.o \
 ./source/ledControl.o \
 ./source/loggerFunctions.o \
 ./source/mtb.o \
@@ -21,7 +25,9 @@ OBJS += \
 
 C_DEPS += \
 ./source/PES\ Project\ 6.d \
+./source/adc_driver.d \
 ./source/dac_driver.d \
+./source/dma_driver.d \
 ./source/ledControl.d \
 ./source/loggerFunctions.d \
 ./source/mtb.d \
