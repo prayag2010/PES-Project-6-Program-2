@@ -11,6 +11,7 @@
  */
 
 #include "ledControl.h"
+//#include "semphr.h"
 
 void Init_RGB_LEDs(void)
 {
@@ -32,6 +33,8 @@ void Init_RGB_LEDs(void)
 
 void ledOff()
 {
+//    xSemaphoreTake(xMutex, portMAX_DELAY);
+
 	PTB->PSOR = MASK(RED_LED_POS);  //Switch off RED
 	PTB->PSOR = MASK(GREEN_LED_POS); //Switch off GREEN
 	PTD->PSOR = MASK(BLUE_LED_POS); //Switch off BLUE

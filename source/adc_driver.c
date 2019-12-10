@@ -1,8 +1,14 @@
 /*
- * adc_driver.c
+ * @file adc_driver.c
+ * @brief Source file for using the ADC
  *
- *  Created on: 08-Dec-2019
- *      Author: prayag
+ * This source file has functions that
+ * uses the ADC to sample a sine wave of 1V - 3V
+ * of a period of 5 seconds
+ *
+ * @authors Rahul Ramaprasad, Prayag Milan Desai
+ * @date December 8 2019
+ * @verison 1.0
  */
 
 #include "dac_adc_drivers.h"

@@ -10,12 +10,12 @@ source/PES\ Project\ 6.d: ../source/PES\ Project\ 6.c ../board/board.h \
  ../drivers/fsl_adc16.h ../drivers/fsl_dac.h ../source/loggerFunctions.h \
  ../source/ledControl.h ../source/../CMSIS/MKL25Z4.h \
  ../source/dma_driver.h ../drivers/fsl_dma.h ../drivers/fsl_dmamux.h \
- ../freertos/FreeRTOS.h ../freertos/FreeRTOSConfig.h \
- ../freertos/projdefs.h ../freertos/portable.h \
- ../freertos/deprecated_definitions.h ../freertos/portmacro.h \
- ../freertos/mpu_wrappers.h ../freertos/task.h ../freertos/list.h \
- ../freertos/queue.h ../freertos/timers.h ../freertos/task.h \
- ../source/PES_PROJECT_6.h
+ ../source/PES_PROJECT_6.h ../freertos/FreeRTOS.h \
+ ../freertos/FreeRTOSConfig.h ../freertos/projdefs.h \
+ ../freertos/portable.h ../freertos/deprecated_definitions.h \
+ ../freertos/portmacro.h ../freertos/mpu_wrappers.h ../freertos/task.h \
+ ../freertos/list.h ../freertos/queue.h ../freertos/timers.h \
+ ../freertos/task.h ../freertos/semphr.h ../freertos/queue.h
 
 ../board/board.h:
 
@@ -73,6 +73,8 @@ source/PES\ Project\ 6.d: ../source/PES\ Project\ 6.c ../board/board.h \
 
 ../drivers/fsl_dmamux.h:
 
+../source/PES_PROJECT_6.h:
+
 ../freertos/FreeRTOS.h:
 
 ../freertos/FreeRTOSConfig.h:
@@ -97,4 +99,6 @@ source/PES\ Project\ 6.d: ../source/PES\ Project\ 6.c ../board/board.h \
 
 ../freertos/task.h:
 
-../source/PES_PROJECT_6.h:
+../freertos/semphr.h:
+
+../freertos/queue.h:

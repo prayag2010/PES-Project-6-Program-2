@@ -82,11 +82,11 @@ void log_message(enum loggerMode logLevel, const char *functionName, char *messa
 		}
 #endif
 
-#ifdef normal
+#ifdef release
 		//log if normal build config is selected
-		if (logLevel == NORMAL)
+		if (logLevel == RELEASE)
 		{
-			printf("NORMAL: ");
+			printf("RELEASE: ");
 			printf("%s: %s\n", functionName, message);
 		}
 #endif
@@ -98,10 +98,23 @@ void log_message(enum loggerMode logLevel, const char *functionName, char *messa
 void log_message_int(enum loggerMode logLevel, const char *functionName, char* message, int number)
 {
 	if(loggerEnable){
+
+		unsigned long hour = tenth/36000UL;
+		unsigned long min = tenth/600UL;
+		unsigned long sec = tenth/10UL;
+
+		if(sec >= 60)
+			sec -= 60;
+		if(min >= 60)
+			min -= 60;
+		if(hour >= 24)
+			hour -= 24;
+
+
 #ifdef debug
-		//log if debug build config is selected
+//log if debug build config is selected
 		if(logLevel == DEBUG){
-			printf("DEBUG: ");
+			printf("DEBUG: %lu:%lu:%lu:%lu: ", hour, min, sec, tenth%10);
 			printf("%s: %s %d\n", functionName, message, number);
 		}
 #endif
@@ -114,10 +127,10 @@ void log_message_int(enum loggerMode logLevel, const char *functionName, char* m
 		}
 #endif
 
-#ifdef normal
+#ifdef release
 		//log if normal build config is selected
-		if (logLevel == NORMAL){
-			printf("NORMAL: ");
+		if (logLevel == RELEASE){
+			printf("NORMAL: %lu:%lu:%lu:%lu: ", hour, min, sec, tenth%10);
 			printf("%s: %s %d\n", functionName, message, number);
 		}
 #endif

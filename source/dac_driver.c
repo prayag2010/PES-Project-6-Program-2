@@ -1,8 +1,14 @@
 /*
- * dac_driver.c
+ * @file dac_driver.c
+ * @brief Source file for using the DAC
  *
- *  Created on: 08-Dec-2019
- *      Author: prayag
+ * This source file has functions that
+ * uses the DAC to generate a sine wave of 1V - 3V
+ * of a period of 5 seconds
+ *
+ * @authors Rahul Ramaprasad, Prayag Milan Desai
+ * @date December 8 2019
+ * @verison 1.0
  */
 
 #include "dac_adc_drivers.h"

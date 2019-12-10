@@ -1,8 +1,13 @@
 /*
- * PES_PROJECT_6.h
+ * @file    PES Project 6.h
+ * @brief   Header file that holds function prorotypes
  *
- *  Created on: 08-Dec-2019
- *      Author: prayag
+ * This header file holds the function prototypes and the variable declarations
+ * required for the program to run
+ *
+ * @date 8 Dec 2019
+ * @author Rahul Ramaprasad, Prayag Desai
+ * @version v1.0
  */
 
 #ifndef PES_PROJECT_6_H_
