@@ -18,10 +18,10 @@ void DMA_Callback(dma_handle_t *handle, void *param)
 	DMA_Initialize();
 	g_Transfer_Done = true;
 	xQueueReset(adcQueue);
-	printf("DMA DONE\n");
-	for(int i = 0; i < 64; i++){
-		printf("%d\n", destDMA[i]);
-	}
+//	printf("DMA DONE\n");
+//	for(int i = 0; i < 64; i++){
+//		printf("%d\n", destDMA[i]);
+//	}
 }
 
 
