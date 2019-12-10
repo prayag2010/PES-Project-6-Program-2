@@ -8,7 +8,6 @@
 
 ---
 **Extra Credits:**  
-
 Implemented FreeRTOS queue to store the ADC values and transferred using the DMA. Also implemented a mutex in order to lock the LED resource while blinking at the begining of DMA transfer.  
 
 **Description of repository contents:**  
@@ -39,8 +38,7 @@ This folder contains the debug target which are created after the compilation of
 
 **Folder Release:**
 This folder contains the release target, which are created after the compilation of all the source files. This folder also contains the output of the compilation process which is ***'.axf'*** file. The '.axf' file will be executed on the FRDM board.  
-**Folder FreeRTOS**  
-
+**Folder FreeRTOS:**  
 This folder contains the FreeRTOS library functions. Source files such as Task.c, Semphr.c, Queue.c and FreeRTOS.c are included in this folder.
 
 
